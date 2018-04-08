@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HotelForm />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HotelForm from './components/HotelForm.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    HotelForm
   }
 }
 </script>
@@ -22,7 +21,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: white;
+  padding-top: 60px;
+  height: 100vh;
+  background: rebeccapurple;
 }
+
 </style>
