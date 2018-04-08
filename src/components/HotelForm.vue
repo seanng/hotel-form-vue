@@ -26,7 +26,7 @@
       </div>
       <div class="form-inline">
         <label for="adminPhone">Phone Number</label>
-        <input v-model="model.admin.phone" type="number" class="form-control" id="adminPhone">
+        <input v-model="model.admin.phoneNumber" type="number" class="form-control" id="adminPhone">
       </div>
       <div class="form-inline">
         <label for="adminPassword">Password</label>
@@ -58,7 +58,7 @@ const INITIAL_DATA = {
       firstName: '',
       lastName: '',
       password: 'password1234',
-      phone: ''
+      phoneNumber: ''
     },
     hotel: {
       name: '',
@@ -117,7 +117,7 @@ export default {
             firstName: '',
             lastName: '',
             password: 'password1234',
-            phone: ''
+            phoneNumber: ''
           },
           hotel: {
             name: '',
