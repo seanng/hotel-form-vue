@@ -3,34 +3,37 @@
     <div id="title">
       Hotel Creation Form
     </div>
-    <form>
+    <a v-if="!data.stripeCode" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_CeKJ9bzvcfEd3aE9rMlSyCLzadjC6XAy&scope=read_write">
+      <button class="btn btn-info">Connect Stripe Account</button>
+    </a>
+    <form v-else>
       <div class="form-inline">
         <label for="hotelName">Hotel Name</label>
-        <input v-model="model.hotel.name" type="text" class="form-control" id="hotelName">
+        <input v-model="data.hotel.name" type="text" class="form-control" id="hotelName">
       </div>
       <div class="form-inline">
         <label for="hotelRoomType">Room Type</label>
-        <input v-model="model.hotel.roomType" type="text" class="form-control" id="hotelRoomType" value="Standard">
+        <input v-model="data.hotel.roomType" type="text" class="form-control" id="hotelRoomType" value="Standard">
       </div>
       <div class="form-inline">
-        <label for="adminFirstName">First Name (of Key Contact)</label>
-        <input v-model="model.admin.firstName" type="text" class="form-control" id="adminFirstName">
+        <label for="adminFirstName">Admin First Name</label>
+        <input v-model="data.admin.firstName" type="text" class="form-control" id="adminFirstName">
       </div>
       <div class="form-inline">
-        <label for="adminLastName">Last Name (of Key Contact)</label>
-        <input v-model="model.admin.lastName" type="text" class="form-control" id="adminFirstName">
+        <label for="adminLastName">Admin Last Name</label>
+        <input v-model="data.admin.lastName" type="text" class="form-control" id="adminFirstName">
       </div>
       <div class="form-inline">
-        <label for="adminEmail">Email Address</label>
-        <input v-model="model.admin.email" type="email" class="form-control" id="adminEmail">
+        <label for="adminEmail">Admin Email Address</label>
+        <input v-model="data.admin.email" type="email" class="form-control" id="adminEmail">
       </div>
       <div class="form-inline">
-        <label for="adminPhone">Phone Number</label>
-        <input v-model="model.admin.phoneNumber" type="number" class="form-control" id="adminPhone">
+        <label for="adminPhone">Admin Phone Number</label>
+        <input v-model="data.admin.phoneNumber" type="number" class="form-control" id="adminPhone">
       </div>
       <div class="form-inline">
-        <label for="adminPassword">Password</label>
-        <input v-model="model.admin.password" type="text" class="form-control" id="adminPassword">
+        <label for="adminPassword">Admin Password</label>
+        <input v-model="data.admin.password" type="text" class="form-control" id="adminPassword">
       </div>
       <div v-if="alert.shouldDisplay">
         <div v-if="alert.success" class="alert alert-success">
@@ -52,7 +55,7 @@
 <script>
 
 const INITIAL_DATA = {
-  model: {
+  data: {
     admin: {
       email: '',
       firstName: '',
@@ -62,19 +65,26 @@ const INITIAL_DATA = {
     },
     hotel: {
       name: '',
-      roomType: ''
-    }
+      roomType: '',
+    },
+    stripeCode: null
   },
   alert: {
     shouldDisplay: false,
     success: true,
     response: null
-  }
+  },
 }
 
 export default {
   name: 'HotelForm',
   data: () => ({...INITIAL_DATA}),
+  created: function () {
+    const code = window.location.href.split('code=')[1]
+    if (code) {
+      this.data.stripeCode = code
+    }
+  },
   methods: {
     transformResponseToState: function (response) {
       if (response.ok) {
@@ -91,16 +101,6 @@ export default {
         }
       }
     },
-    transformModelToData: function (model) {
-      return {
-        admin: {
-          ...model.admin
-        }, 
-        hotel: {
-          ...model.hotel
-        }
-      }
-    },
     submitForm: function (data) {
       const baseURL = `http://localhost:5050`
       const endpoint = `/api/hotels`
@@ -108,10 +108,9 @@ export default {
     },
     handleSubmit: function (e) {
       e.preventDefault()
-      const data = this.transformModelToData(this.model);
-      this.submitForm(data).then(response => {
+      this.submitForm(this.data).then(response => {
         this.alert = this.transformResponseToState(response)
-        this.model = {
+        this.data = {
           admin: {
             email: '',
             firstName: '',
@@ -121,8 +120,9 @@ export default {
           },
           hotel: {
             name: '',
-            roomType: ''
-          }
+            roomType: '',
+          },
+          stripeCode: null
         }
       }, response => {
         this.alert = this.transformResponseToState(response)
